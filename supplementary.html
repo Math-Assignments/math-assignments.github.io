@@ -74,7 +74,8 @@
             </div>
         `;
         
-        modal.setAttribute('data-link', link.href);
+        modal.setAttribute('data-file', link.getAttribute('data-file'));
+        modal.setAttribute('data-filename', link.getAttribute('data-filename'));
         document.body.appendChild(modal);
         
         setTimeout(() => {
@@ -97,7 +98,8 @@
         const modal = btn.closest('.password-modal');
         const passwordInput = document.getElementById('passwordInput');
         const secretKeyInput = document.getElementById('secretKeyInput');
-        const link = modal.getAttribute('data-link');
+        const filePath = modal.getAttribute('data-file');
+        const fileName = modal.getAttribute('data-filename');
         
         const userInput = passwordInput.value;
         const secretKey = secretKeyInput.value;
@@ -111,7 +113,12 @@
         const hashHex = Array.from(new Uint8Array(hash))
             .map(b => b.toString(16).padStart(2, '0')).join('');
         if(hashHex === "30f35a832a644952e30b013d2f247bf8d85e85d8a873e39654af9afb8c452cbe") {
-            window.location.href = link;
+            const downloadLink = document.createElement('a');
+            downloadLink.href = filePath;
+            downloadLink.download = fileName;
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
             closePasswordModal(btn);
         } else {
             alert('Authentication failed！');
